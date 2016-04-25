@@ -60,7 +60,7 @@
 	function main(sources) {
 	  var STATS_URL = 'https://6xv5w2s8v3.execute-api.us-west-2.amazonaws.com/prod/getRoyalsScore';
 
-	  var getRandomUser$ = sources.DOM.select('.get-game-details').events('click').map(function () {
+	  var getGameDetails$ = sources.DOM.select('.get-game-details').events('click').map(function () {
 	    return {
 	      url: STATS_URL,
 	      method: 'GET'
@@ -83,7 +83,7 @@
 
 	  var sinks = {
 	    DOM: vtree$,
-	    HTTP: getRandomUser$
+	    HTTP: getGameDetails$
 	  };
 	  return sinks;
 	}
