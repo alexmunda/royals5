@@ -6,7 +6,7 @@ import {makeHTTPDriver} from '@cycle/http';
 function main(sources) {
   const STATS_URL = 'https://6xv5w2s8v3.execute-api.us-west-2.amazonaws.com/prod/getRoyalsScore';
 
-  const getRandomUser$ = sources.DOM.select('.get-game-details').events('click')
+  const getGameDetails$ = sources.DOM.select('.get-game-details').events('click')
     .map(() => {
       return {
         url: STATS_URL,
@@ -47,7 +47,7 @@ function main(sources) {
 
   const sinks = {
     DOM: vtree$,
-    HTTP: getRandomUser$
+    HTTP: getGameDetails$
   };
   return sinks;
 }
