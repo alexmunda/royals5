@@ -2,10 +2,9 @@ import Cycle from '@cycle/core';
 import {div, button, h1, h2, h4, a, ul, li, makeDOMDriver} from '@cycle/dom';
 import {makeHTTPDriver} from '@cycle/http';
 
-const STATS_URL = 'https://6xv5w2s8v3.execute-api.us-west-2.amazonaws.com/prod/getRoyalsScore';
-
-//functional
-const intent = (DOM) => {
+const intent = (DOM, HTTP) => {
+  const STATS_URL = 'https://6xv5w2s8v3.execute-api.us-west-2.amazonaws.com/prod/getRoyalsScore';
+  
   return {
     getGameDetails$: DOM.select('.get-game-details').events('click')
     .map(() => {
@@ -13,20 +12,19 @@ const intent = (DOM) => {
         url: STATS_URL,
         method: 'GET'
       };
-    })
+    }),
+    stats$: HTTP
+      .filter(res$ => res$.request.url.indexOf(STATS_URL) === 0)
+      .mergeAll()
+      .map(res => res.body)
+      .startWith(null)
   };
 };
 
 function main(sources) {
-  const actions = intent(sources.DOM);
+  const actions = intent(sources.DOM, sources.HTTP);
 
-  const stats$ = sources.HTTP
-    .filter(res$ => res$.request.url.indexOf(STATS_URL) === 0)
-    .mergeAll()
-    .map(res => res.body)
-    .startWith(null);
-
-  const vtree$ = stats$.map(stat => {
+  const vtree$ = actions.stats$.map(stat => {
     const royals5 = stat !== null && stat.score.royals >= 5 && stat.score.royals > stat.score.opponent;
     
     return div('.royals5-container', [

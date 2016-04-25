@@ -56,30 +56,28 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var STATS_URL = 'https://6xv5w2s8v3.execute-api.us-west-2.amazonaws.com/prod/getRoyalsScore';
+	var intent = function intent(DOM, HTTP) {
+	  var STATS_URL = 'https://6xv5w2s8v3.execute-api.us-west-2.amazonaws.com/prod/getRoyalsScore';
 
-	//functional
-	var intent = function intent(DOM) {
 	  return {
 	    getGameDetails$: DOM.select('.get-game-details').events('click').map(function () {
 	      return {
 	        url: STATS_URL,
 	        method: 'GET'
 	      };
-	    })
+	    }),
+	    stats$: HTTP.filter(function (res$) {
+	      return res$.request.url.indexOf(STATS_URL) === 0;
+	    }).mergeAll().map(function (res) {
+	      return res.body;
+	    }).startWith(null)
 	  };
 	};
 
 	function main(sources) {
-	  var actions = intent(sources.DOM);
+	  var actions = intent(sources.DOM, sources.HTTP);
 
-	  var stats$ = sources.HTTP.filter(function (res$) {
-	    return res$.request.url.indexOf(STATS_URL) === 0;
-	  }).mergeAll().map(function (res) {
-	    return res.body;
-	  }).startWith(null);
-
-	  var vtree$ = stats$.map(function (stat) {
+	  var vtree$ = actions.stats$.map(function (stat) {
 	    var royals5 = stat !== null && stat.score.royals >= 5 && stat.score.royals > stat.score.opponent;
 
 	    return (0, _dom.div)('.royals5-container', [(0, _dom.button)('.get-game-details .btn .btn-info', 'Will ROYALS5 work?'), stat == null ? (0, _dom.div)('.not-loaded', [(0, _dom.h1)('.not-loaded-header', 'IDK, did the Royals score 5 runs or more and win? Click the button!')]) : royals5 ? (0, _dom.div)('.game-details-container', [(0, _dom.h1)('.status-yes', 'YES!'), (0, _dom.h2)('.royals-score', 'Royals: ' + stat.score.royals), (0, _dom.h2)('.opponent-score', 'Opponent: ' + stat.score.opponent), (0, _dom.div)('.rbi-hitters-container', [(0, _dom.h4)('.rbi-header', 'Royals RBI Hitters'), (0, _dom.ul)('.rbi-hitters-list', stat.rbiHitters.map(function (hitter) {
