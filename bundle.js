@@ -56,16 +56,22 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	//functional
-	function main(sources) {
-	  var STATS_URL = 'https://6xv5w2s8v3.execute-api.us-west-2.amazonaws.com/prod/getRoyalsScore';
+	var STATS_URL = 'https://6xv5w2s8v3.execute-api.us-west-2.amazonaws.com/prod/getRoyalsScore';
 
-	  var getGameDetails$ = sources.DOM.select('.get-game-details').events('click').map(function () {
-	    return {
-	      url: STATS_URL,
-	      method: 'GET'
-	    };
-	  });
+	//functional
+	var intent = function intent(DOM) {
+	  return {
+	    getGameDetails$: DOM.select('.get-game-details').events('click').map(function () {
+	      return {
+	        url: STATS_URL,
+	        method: 'GET'
+	      };
+	    })
+	  };
+	};
+
+	function main(sources) {
+	  var actions = intent(sources.DOM);
 
 	  var stats$ = sources.HTTP.filter(function (res$) {
 	    return res$.request.url.indexOf(STATS_URL) === 0;
@@ -83,7 +89,7 @@
 
 	  var sinks = {
 	    DOM: vtree$,
-	    HTTP: getGameDetails$
+	    HTTP: actions.getGameDetails$
 	  };
 	  return sinks;
 	}

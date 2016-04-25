@@ -2,17 +2,23 @@ import Cycle from '@cycle/core';
 import {div, button, h1, h2, h4, a, ul, li, makeDOMDriver} from '@cycle/dom';
 import {makeHTTPDriver} from '@cycle/http';
 
-//functional
-function main(sources) {
-  const STATS_URL = 'https://6xv5w2s8v3.execute-api.us-west-2.amazonaws.com/prod/getRoyalsScore';
+const STATS_URL = 'https://6xv5w2s8v3.execute-api.us-west-2.amazonaws.com/prod/getRoyalsScore';
 
-  const getGameDetails$ = sources.DOM.select('.get-game-details').events('click')
+//functional
+const intent = (DOM) => {
+  return {
+    getGameDetails$: DOM.select('.get-game-details').events('click')
     .map(() => {
       return {
         url: STATS_URL,
         method: 'GET'
       };
-    });
+    })
+  };
+};
+
+function main(sources) {
+  const actions = intent(sources.DOM);
 
   const stats$ = sources.HTTP
     .filter(res$ => res$.request.url.indexOf(STATS_URL) === 0)
@@ -47,7 +53,7 @@ function main(sources) {
 
   const sinks = {
     DOM: vtree$,
-    HTTP: getGameDetails$
+    HTTP: actions.getGameDetails$
   };
   return sinks;
 }
