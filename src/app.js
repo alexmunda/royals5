@@ -45,29 +45,29 @@ const view = (state$) => {
       !hasData ? div('.not-loaded', [
         h1('.not-loaded-header', 'IDK, did the Royals score 5 runs or more and win? Click the button!')
       ]) : 
-       div('.game-details-container', [
+       div('.game-details-container .col-lg-1 .col-centered', [
         royals5 ? h1('.status-yes', 'YES!') : h1('.status-no', 'NO :('),
         h2('.royals-score', `Royals: ${royalsRuns}`),
         h2('.opponent-score', `Opponent: ${opponentRuns}`),
-        div('.royals-rbi-hitters-container',[
+        div('.royals-rbi-hitters-container .col-md-3',[
           h4('.royals-rbi-header', 'Royals RBI Hitters'),
           ul('.rbi-hitters-list', rbiHitters.royals.map( hitter =>
             li('.rbi-hitter', hitter)
           ))
         ]),
-        div('.royals-pitchers-container', [
+        div('.royals-pitchers-container .col-md-3', [
           h4('.royals-pitcher-header', 'Royals Pitcher'),
           ul('.pitcher-list', [
             li('.pitcher', pitchers.royals)
           ])
         ]),
-        div('.opponent-rbi-hitters-container',[
+        div('.opponent-rbi-hitters-container .col-md-3',[
           h4('.opponent-rbi-header', 'Opponent RBI Hitters'),
           ul('.rbi-hitters-list', rbiHitters.opponent.map( hitter =>
             li('.rbi-hitter', hitter)
           ))
         ]),
-        div('.opponent-pitchers-container', [
+        div('.opponent-pitchers-container .col-md-3', [
           h4('.opponent-pitcher-header', 'Opponent Pitcher'),
           ul('.pitcher-list', [
             li('.pitcher', pitchers.opponent)

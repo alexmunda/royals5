@@ -1,0 +1,33 @@
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.opponent-score{
+  color: red
+}
+
+.opponent-rbi-header
+{
+  color: red
+}
+
+.opponent-pitcher-header
+{
+  color: red
+}
+
+.royals-score
+{
+  color: blue
+}
+
+.royals-rbi-header
+{
+  color: blue
+}
+
+.royals-pitcher-header
+{
+  color: blue
+}
