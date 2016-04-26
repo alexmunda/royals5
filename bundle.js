@@ -57,42 +57,71 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var intent = function intent(DOM, HTTP) {
-	  var STATS_URL = 'https://6xv5w2s8v3.execute-api.us-west-2.amazonaws.com/prod/getRoyalsScore';
+	  var GAME_DETAILS_URL = 'https://6xv5w2s8v3.execute-api.us-west-2.amazonaws.com/prod/getRoyalsScore';
 
 	  return {
 	    getGameDetails$: DOM.select('.get-game-details').events('click').map(function () {
 	      return {
-	        url: STATS_URL,
+	        url: GAME_DETAILS_URL,
 	        method: 'GET'
 	      };
 	    }),
-	    stats$: HTTP.filter(function (res$) {
-	      return res$.request.url.indexOf(STATS_URL) === 0;
+	    gameDetails$: HTTP.filter(function (res$) {
+	      return res$.request.url.indexOf(GAME_DETAILS_URL) === 0;
 	    }).mergeAll().map(function (res) {
 	      return res.body;
 	    }).startWith(null)
 	  };
 	};
 
+	var model = function model(actions) {
+	  return actions.gameDetails$.map(function (gameDetail) {
+	    if (gameDetail == null) return { hasData: false };
+
+	    var _gameDetail$score = gameDetail.score;
+	    var royals = _gameDetail$score.royals;
+	    var opponent = _gameDetail$score.opponent;
+
+
+	    return {
+	      hasData: gameDetail !== null,
+	      royals5: gameDetail !== null && royals >= 5 && royals > opponent,
+	      royalsRuns: royals,
+	      opponentRuns: opponent,
+	      rbiHitters: gameDetail.score.rbiHitters,
+	      winningPitcher: gameDetail.score.winningPitcher
+	    };
+	  });
+	};
+
+	var view = function view(state$) {
+	  return state$.map(function (_ref) {
+	    var hasData = _ref.hasData;
+	    var royals5 = _ref.royals5;
+	    var royalsRuns = _ref.royalsRuns;
+	    var opponentRuns = _ref.opponentRuns;
+	    var rbiHitters = _ref.rbiHitters;
+	    var winningPitcher = _ref.winningPitcher;
+	    return (0, _dom.div)('.container', [(0, _dom.button)('.get-game-details .btn .btn-info', 'Will ROYALS5 work?'), !hasData ? (0, _dom.div)('.not-loaded', [(0, _dom.h1)('.not-loaded-header', 'IDK, did the Royals score 5 runs or more and win? Click the button!')]) : royals5 ? (0, _dom.div)('.game-details-container', [(0, _dom.h1)('.status-yes', 'YES!'), (0, _dom.h2)('.royals-score', 'Royals: ' + royalsRuns), (0, _dom.h2)('.opponent-score', 'Opponent: ' + opponentRuns), (0, _dom.div)('.rbi-hitters-container', [(0, _dom.h4)('.rbi-header', 'Royals RBI Hitters'), (0, _dom.ul)('.rbi-hitters-list', rbiHitters.map(function (hitter) {
+	      return (0, _dom.li)('.rbi-hitter', hitter);
+	    }))]), (0, _dom.div)('.pitchers-container', [(0, _dom.h4)('.pitcher-header', 'Royals Pitcher'), (0, _dom.ul)('.pitcher-list', function () {
+	      return (0, _dom.li)('.pitcher', winningPitcher);
+	    })])]) : (0, _dom.div)('.no-container', [(0, _dom.h2)('.status-no', 'NO :(')])]);
+	  });
+	};
+
 	function main(sources) {
 	  var actions = intent(sources.DOM, sources.HTTP);
 
-	  var vtree$ = actions.stats$.map(function (stat) {
-	    var royals5 = stat !== null && stat.score.royals >= 5 && stat.score.royals > stat.score.opponent;
-
-	    return (0, _dom.div)('.royals5-container', [(0, _dom.button)('.get-game-details .btn .btn-info', 'Will ROYALS5 work?'), stat == null ? (0, _dom.div)('.not-loaded', [(0, _dom.h1)('.not-loaded-header', 'IDK, did the Royals score 5 runs or more and win? Click the button!')]) : royals5 ? (0, _dom.div)('.game-details-container', [(0, _dom.h1)('.status-yes', 'YES!'), (0, _dom.h2)('.royals-score', 'Royals: ' + stat.score.royals), (0, _dom.h2)('.opponent-score', 'Opponent: ' + stat.score.opponent), (0, _dom.div)('.rbi-hitters-container', [(0, _dom.h4)('.rbi-header', 'Royals RBI Hitters'), (0, _dom.ul)('.rbi-hitters-list', stat.rbiHitters.map(function (hitter) {
-	      return (0, _dom.li)('.rbi-hitter', hitter);
-	    }))])]) : (0, _dom.div)('.no-container', [(0, _dom.h2)('.status-no', 'NO :(')])]);
-	  });
+	  var state$ = model(actions);
 
 	  var sinks = {
-	    DOM: vtree$,
+	    DOM: view(state$),
 	    HTTP: actions.getGameDetails$
 	  };
 	  return sinks;
 	}
 
-	//imperative
 	var drivers = {
 	  DOM: (0, _dom.makeDOMDriver)('#app'),
 	  HTTP: (0, _http.makeHTTPDriver)()
