@@ -1,5 +1,5 @@
 import Cycle from '@cycle/core';
-import {div, button, h1, h2, h4, a, ul, li, makeDOMDriver} from '@cycle/dom';
+import {div, button, h1, h2, h4, a, ul, li, img, makeDOMDriver} from '@cycle/dom';
 import {makeHTTPDriver} from '@cycle/http';
 
 const intent = (DOM, HTTP) => {
@@ -41,38 +41,48 @@ const model = (actions) => {
 const view = (state$) => {
   return state$.map(({hasData, royals5, royalsRuns, opponentRuns, rbiHitters, pitchers}) =>
     div('.container', [
-      button('.get-game-details .btn .btn-info', 'Will ROYALS5 work?'),
-      !hasData ? div('.not-loaded', [
+      div('.game-details-button-container .row', [
+        button('.get-game-details .btn .btn-info', 'Will ROYALS5 work?')
+      ]),      
+      !hasData ? div('.not-loaded .row', [
         h1('.not-loaded-header', 'IDK, did the Royals score 5 runs or more and win? Click the button!')
       ]) : 
-       div('.game-details-container .col-lg-1 .col-centered', [
-        royals5 ? h1('.status-yes', 'YES!') : h1('.status-no', 'NO :('),
-        h2('.royals-score', `Royals: ${royalsRuns}`),
-        h2('.opponent-score', `Opponent: ${opponentRuns}`),
-        div('.royals-rbi-hitters-container .col-md-3',[
-          h4('.royals-rbi-header', 'Royals RBI Hitters'),
-          ul('.rbi-hitters-list', rbiHitters.royals.map( hitter =>
-            li('.rbi-hitter', hitter)
-          ))
+       div('.game-details-container .row', [
+        royals5 ? div('.status-yes ', [          
+          h1('.status-yes-header', 'YES!'),
+          img('.salvy .img .img-responsive', {src: "http://cdn.fansided.com/wp-content/blogs.dir/220/files/2014/10/alcides-escobar-salvador-perez-mlb-al-wild-card-oakland-athletics-kansas-city-royals1-590x900.jpg"})
+        ]) : div('.status-no', [          
+          h1('.status-no-header', 'NO :('),
+          img('.salvy-sad .img .img-responsive', {src: "http://www.newsobserver.com/news/nation-world/1tbux4/picture18733713/ALTERNATES/FREE_960/018.JPG"})
         ]),
-        div('.royals-pitchers-container .col-md-3', [
-          h4('.royals-pitcher-header', 'Royals Pitcher'),
-          ul('.pitcher-list', [
-            li('.pitcher', pitchers.royals)
+        div('.game-details', [
+          h2('.royals-score', `Royals: ${royalsRuns}`),
+          h2('.opponent-score', `Opponent: ${opponentRuns}`),
+          div('.royals-rbi-hitters-container .col-md-3',[
+            h4('.royals-rbi-header', 'Royals RBI Hitters'),
+            ul('.rbi-hitters-list', rbiHitters.royals.map( hitter =>
+              li('.rbi-hitter', hitter)
+            ))
+          ]),
+          div('.royals-pitchers-container .col-md-3', [
+            h4('.royals-pitcher-header', 'Royals Pitcher'),
+            ul('.pitcher-list', [
+              li('.pitcher', pitchers.royals)
+            ])
+          ]),
+          div('.opponent-rbi-hitters-container .col-md-3',[
+            h4('.opponent-rbi-header', 'Opponent RBI Hitters'),
+            ul('.rbi-hitters-list', rbiHitters.opponent.map( hitter =>
+              li('.rbi-hitter', hitter)
+            ))
+          ]),
+          div('.opponent-pitchers-container .col-md-3', [
+            h4('.opponent-pitcher-header', 'Opponent Pitcher'),
+            ul('.pitcher-list', [
+              li('.pitcher', pitchers.opponent)
+            ])
           ])
-        ]),
-        div('.opponent-rbi-hitters-container .col-md-3',[
-          h4('.opponent-rbi-header', 'Opponent RBI Hitters'),
-          ul('.rbi-hitters-list', rbiHitters.opponent.map( hitter =>
-            li('.rbi-hitter', hitter)
-          ))
-        ]),
-        div('.opponent-pitchers-container .col-md-3', [
-          h4('.opponent-pitcher-header', 'Opponent Pitcher'),
-          ul('.pitcher-list', [
-            li('.pitcher', pitchers.opponent)
-          ])
-        ])
+        ])        
       ])
     ])
   );
