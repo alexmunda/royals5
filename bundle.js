@@ -104,16 +104,22 @@
 	    var opponentRuns = _ref.opponentRuns;
 	    var rbiHitters = _ref.rbiHitters;
 	    var pitchers = _ref.pitchers;
-	    return (0, _dom.div)('.container', [(0, _dom.div)('.game-details-button-container .row', [(0, _dom.button)('.get-game-details .btn .btn-info', 'Will ROYALS5 work?')]), !hasData ? (0, _dom.div)('.not-loaded .row', [(0, _dom.h1)('.not-loaded-header', 'IDK, did the Royals score 5 runs or more and win? Click the button!')]) : (0, _dom.div)('.game-details-container .row', [royals5 ? (0, _dom.div)('.status-yes ', [(0, _dom.h1)('.status-yes-header', 'YES!'), (0, _dom.img)('.salvy .img .img-responsive', { src: "http://cdn.fansided.com/wp-content/blogs.dir/220/files/2014/10/alcides-escobar-salvador-perez-mlb-al-wild-card-oakland-athletics-kansas-city-royals1-590x900.jpg" })]) : (0, _dom.div)('.status-no', [(0, _dom.h1)('.status-no-header', 'NO :('), (0, _dom.img)('.salvy-sad .img .img-responsive', { src: "http://www.newsobserver.com/news/nation-world/1tbux4/picture18733713/ALTERNATES/FREE_960/018.JPG" })]), (0, _dom.div)('.game-details', [(0, _dom.h2)('.royals-score', 'Royals: ' + royalsRuns), (0, _dom.h2)('.opponent-score', 'Opponent: ' + opponentRuns), (0, _dom.div)('.royals-rbi-hitters-container .col-md-3', [(0, _dom.h4)('.royals-rbi-header', 'Royals RBI Hitters'), (0, _dom.ul)('.rbi-hitters-list', rbiHitters.royals.map(function (hitter) {
-	      return (0, _dom.li)('.rbi-hitter', hitter);
-	    }))]), pitchersContainer({
+	    return (0, _dom.div)('.container', [(0, _dom.div)('.game-details-button-container .row', [(0, _dom.button)('.get-game-details .btn .btn-info', 'Will ROYALS5 work?')]), !hasData ? (0, _dom.div)('.not-loaded .row', [(0, _dom.h1)('.not-loaded-header', 'IDK, did the Royals score 5 runs or more and win? Click the button!')]) : (0, _dom.div)('.game-details-container .row', [royals5 ? (0, _dom.div)('.status-yes ', [(0, _dom.h1)('.status-yes-header', 'YES!'), (0, _dom.img)('.salvy .img .img-responsive', { src: "http://cdn.fansided.com/wp-content/blogs.dir/220/files/2014/10/alcides-escobar-salvador-perez-mlb-al-wild-card-oakland-athletics-kansas-city-royals1-590x900.jpg" })]) : (0, _dom.div)('.status-no', [(0, _dom.h1)('.status-no-header', 'NO :('), (0, _dom.img)('.salvy-sad .img .img-responsive', { src: "http://www.newsobserver.com/news/nation-world/1tbux4/picture18733713/ALTERNATES/FREE_960/018.JPG" })]), (0, _dom.div)('.game-details', [(0, _dom.h2)('.royals-score', 'Royals: ' + royalsRuns), (0, _dom.h2)('.opponent-score', 'Opponent: ' + opponentRuns), rbiHittersContainer({
+	      prop$: _Rx.Observable.of({
+	        team: 'royals',
+	        rbiHitters: rbiHitters.royals
+	      })
+	    }).DOM, pitchersContainer({
 	      prop$: _Rx.Observable.of({
 	        team: 'royals',
 	        pitcher: pitchers.royals
 	      })
-	    }).DOM, (0, _dom.div)('.opponent-rbi-hitters-container .col-md-3', [(0, _dom.h4)('.opponent-rbi-header', 'Opponent RBI Hitters'), (0, _dom.ul)('.rbi-hitters-list', rbiHitters.opponent.map(function (hitter) {
-	      return (0, _dom.li)('.rbi-hitter', hitter);
-	    }))]), pitchersContainer({
+	    }).DOM, rbiHittersContainer({
+	      prop$: _Rx.Observable.of({
+	        team: 'opponent',
+	        rbiHitters: rbiHitters.opponent
+	      })
+	    }).DOM, pitchersContainer({
 	      prop$: _Rx.Observable.of({
 	        team: 'opponent',
 	        pitcher: pitchers.opponent
@@ -121,6 +127,20 @@
 	    }).DOM])])]);
 	  });
 	};
+
+	function rbiHittersContainer(sources) {
+	  var prop$ = sources.prop$;
+
+	  var vtree$ = prop$.map(function (props) {
+	    return (0, _dom.div)('.' + props.team + '-rbi-hitters-container .col-md-3', [(0, _dom.h4)('.' + props.team + '-rbi-header .first-letter', props.team + ' RBI Hitters'), (0, _dom.ul)('.rbi-hitters-list', props.rbiHitters.map(function (hitter) {
+	      return (0, _dom.li)('.rbi-hitter', hitter);
+	    }))]);
+	  });
+
+	  return {
+	    DOM: vtree$
+	  };
+	}
 
 	function pitchersContainer(sources) {
 	  var prop$ = sources.prop$;

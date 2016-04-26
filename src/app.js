@@ -59,24 +59,24 @@ const view = (state$) => {
           div('.game-details', [
             h2('.royals-score', `Royals: ${royalsRuns}`),
             h2('.opponent-score', `Opponent: ${opponentRuns}`),
-            div('.royals-rbi-hitters-container .col-md-3', [
-              h4('.royals-rbi-header', 'Royals RBI Hitters'),
-              ul('.rbi-hitters-list', rbiHitters.royals.map(hitter =>
-                li('.rbi-hitter', hitter)
-              ))
-            ]),
+            rbiHittersContainer({ 
+              prop$: Observable.of({ 
+                team: 'royals', 
+                rbiHitters: rbiHitters.royals 
+              }) 
+            }).DOM,
             pitchersContainer({ 
               prop$: Observable.of({ 
                 team: 'royals', 
                 pitcher: pitchers.royals 
               }) 
             }).DOM,
-            div('.opponent-rbi-hitters-container .col-md-3', [
-              h4('.opponent-rbi-header', 'Opponent RBI Hitters'),
-              ul('.rbi-hitters-list', rbiHitters.opponent.map(hitter =>
-                li('.rbi-hitter', hitter)
-              ))
-            ]),
+            rbiHittersContainer({ 
+              prop$: Observable.of({ 
+                team: 'opponent', 
+                rbiHitters: rbiHitters.opponent 
+              }) 
+            }).DOM,
             pitchersContainer({ 
               prop$: Observable.of({ 
                 team: 'opponent', 
@@ -89,6 +89,22 @@ const view = (state$) => {
   );
 }
 
+function rbiHittersContainer(sources) {
+  const prop$ = sources.prop$;
+
+  const vtree$ = prop$.map(props =>
+    div(`.${props.team}-rbi-hitters-container .col-md-3`, [
+      h4(`.${props.team}-rbi-header .first-letter`, `${props.team} RBI Hitters`),
+      ul('.rbi-hitters-list', props.rbiHitters.map(hitter =>
+        li('.rbi-hitter', hitter)
+      ))
+    ]));
+
+  return {
+    DOM: vtree$
+  }
+}
+
 function pitchersContainer(sources) {
   const prop$ = sources.prop$;
 
@@ -99,7 +115,6 @@ function pitchersContainer(sources) {
         li('.pitcher', props.pitcher)
       ])
     ]));
-
 
   return {
     DOM: vtree$
