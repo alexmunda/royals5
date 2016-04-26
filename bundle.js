@@ -88,8 +88,8 @@
 	      royals5: gameDetail !== null && royals >= 5 && royals > opponent,
 	      royalsRuns: royals,
 	      opponentRuns: opponent,
-	      rbiHitters: gameDetail.score.rbiHitters,
-	      winningPitcher: gameDetail.score.winningPitcher
+	      rbiHitters: gameDetail.rbiHitters,
+	      pitchers: gameDetail.pitchers
 	    };
 	  });
 	};
@@ -101,12 +101,12 @@
 	    var royalsRuns = _ref.royalsRuns;
 	    var opponentRuns = _ref.opponentRuns;
 	    var rbiHitters = _ref.rbiHitters;
-	    var winningPitcher = _ref.winningPitcher;
-	    return (0, _dom.div)('.container', [(0, _dom.button)('.get-game-details .btn .btn-info', 'Will ROYALS5 work?'), !hasData ? (0, _dom.div)('.not-loaded', [(0, _dom.h1)('.not-loaded-header', 'IDK, did the Royals score 5 runs or more and win? Click the button!')]) : royals5 ? (0, _dom.div)('.game-details-container', [(0, _dom.h1)('.status-yes', 'YES!'), (0, _dom.h2)('.royals-score', 'Royals: ' + royalsRuns), (0, _dom.h2)('.opponent-score', 'Opponent: ' + opponentRuns), (0, _dom.div)('.rbi-hitters-container', [(0, _dom.h4)('.rbi-header', 'Royals RBI Hitters'), (0, _dom.ul)('.rbi-hitters-list', rbiHitters.map(function (hitter) {
+	    var pitchers = _ref.pitchers;
+	    return (0, _dom.div)('.container', [(0, _dom.button)('.get-game-details .btn .btn-info', 'Will ROYALS5 work?'), !hasData ? (0, _dom.div)('.not-loaded', [(0, _dom.h1)('.not-loaded-header', 'IDK, did the Royals score 5 runs or more and win? Click the button!')]) : (0, _dom.div)('.game-details-container', [royals5 ? (0, _dom.h1)('.status-yes', 'YES!') : (0, _dom.h1)('.status-no', 'NO :('), (0, _dom.h2)('.royals-score', 'Royals: ' + royalsRuns), (0, _dom.h2)('.opponent-score', 'Opponent: ' + opponentRuns), (0, _dom.div)('.royals-rbi-hitters-container', [(0, _dom.h4)('.royals-rbi-header', 'Royals RBI Hitters'), (0, _dom.ul)('.rbi-hitters-list', rbiHitters.royals.map(function (hitter) {
 	      return (0, _dom.li)('.rbi-hitter', hitter);
-	    }))]), (0, _dom.div)('.pitchers-container', [(0, _dom.h4)('.pitcher-header', 'Royals Pitcher'), (0, _dom.ul)('.pitcher-list', function () {
-	      return (0, _dom.li)('.pitcher', winningPitcher);
-	    })])]) : (0, _dom.div)('.no-container', [(0, _dom.h2)('.status-no', 'NO :(')])]);
+	    }))]), (0, _dom.div)('.royals-pitchers-container', [(0, _dom.h4)('.royals-pitcher-header', 'Royals Pitcher'), (0, _dom.ul)('.pitcher-list', [(0, _dom.li)('.pitcher', pitchers.royals)])]), (0, _dom.div)('.opponent-rbi-hitters-container', [(0, _dom.h4)('.opponent-rbi-header', 'Opponent RBI Hitters'), (0, _dom.ul)('.rbi-hitters-list', rbiHitters.opponent.map(function (hitter) {
+	      return (0, _dom.li)('.rbi-hitter', hitter);
+	    }))]), (0, _dom.div)('.opponent-pitchers-container', [(0, _dom.h4)('.opponent-pitcher-header', 'Opponent Pitcher'), (0, _dom.ul)('.pitcher-list', [(0, _dom.li)('.pitcher', pitchers.opponent)])])])]);
 	  });
 	};
 

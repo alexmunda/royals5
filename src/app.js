@@ -32,38 +32,47 @@ const model = (actions) => {
       royals5: gameDetail !== null && royals >= 5 && royals > opponent,
       royalsRuns: royals,
       opponentRuns: opponent,
-      rbiHitters: gameDetail.score.rbiHitters,
-      winningPitcher: gameDetail.score.winningPitcher
+      rbiHitters: gameDetail.rbiHitters,
+      pitchers: gameDetail.pitchers
     }
   });
 };
 
 const view = (state$) => {
-  return state$.map(({hasData, royals5, royalsRuns, opponentRuns, rbiHitters, winningPitcher}) =>
+  return state$.map(({hasData, royals5, royalsRuns, opponentRuns, rbiHitters, pitchers}) =>
     div('.container', [
       button('.get-game-details .btn .btn-info', 'Will ROYALS5 work?'),
       !hasData ? div('.not-loaded', [
         h1('.not-loaded-header', 'IDK, did the Royals score 5 runs or more and win? Click the button!')
       ]) : 
-      royals5 ? div('.game-details-container', [
-        h1('.status-yes', 'YES!'),
+       div('.game-details-container', [
+        royals5 ? h1('.status-yes', 'YES!') : h1('.status-no', 'NO :('),
         h2('.royals-score', `Royals: ${royalsRuns}`),
         h2('.opponent-score', `Opponent: ${opponentRuns}`),
-        div('.rbi-hitters-container',[
-          h4('.rbi-header', 'Royals RBI Hitters'),
-          ul('.rbi-hitters-list', rbiHitters.map( hitter =>
+        div('.royals-rbi-hitters-container',[
+          h4('.royals-rbi-header', 'Royals RBI Hitters'),
+          ul('.rbi-hitters-list', rbiHitters.royals.map( hitter =>
             li('.rbi-hitter', hitter)
           ))
         ]),
-        div('.pitchers-container', [
-          h4('.pitcher-header', 'Royals Pitcher'),
-          ul('.pitcher-list', () =>
-            li('.pitcher', winningPitcher)
-          )
+        div('.royals-pitchers-container', [
+          h4('.royals-pitcher-header', 'Royals Pitcher'),
+          ul('.pitcher-list', [
+            li('.pitcher', pitchers.royals)
+          ])
+        ]),
+        div('.opponent-rbi-hitters-container',[
+          h4('.opponent-rbi-header', 'Opponent RBI Hitters'),
+          ul('.rbi-hitters-list', rbiHitters.opponent.map( hitter =>
+            li('.rbi-hitter', hitter)
+          ))
+        ]),
+        div('.opponent-pitchers-container', [
+          h4('.opponent-pitcher-header', 'Opponent Pitcher'),
+          ul('.pitcher-list', [
+            li('.pitcher', pitchers.opponent)
+          ])
         ])
-      ]) : 
-      div('.no-container', [
-        h2('.status-no', 'NO :(')
       ])
     ])
   );
