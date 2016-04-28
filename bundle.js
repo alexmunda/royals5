@@ -62,12 +62,15 @@
 	  var GAME_DETAILS_URL = 'https://6xv5w2s8v3.execute-api.us-west-2.amazonaws.com/prod/getRoyalsScore';
 
 	  return {
-	    getGameDetails$: DOM.select('.get-game-details').events('click').map(function () {
+	    getGameDetails$: _Rx.Observable.merge(_Rx.Observable.just({
+	      url: GAME_DETAILS_URL,
+	      method: 'GET'
+	    }), DOM.select('.get-game-details').events('click').map(function () {
 	      return {
 	        url: GAME_DETAILS_URL,
 	        method: 'GET'
 	      };
-	    }),
+	    })),
 	    gameDetails$: HTTP.filter(function (res$) {
 	      return res$.request.url.indexOf(GAME_DETAILS_URL) === 0;
 	    }).mergeAll().map(function (res) {
@@ -104,7 +107,7 @@
 	    var opponentRuns = _ref.opponentRuns;
 	    var rbiHitters = _ref.rbiHitters;
 	    var pitchers = _ref.pitchers;
-	    return (0, _dom.div)('.container', [(0, _dom.div)('.game-details-button-container .row', [(0, _dom.button)('.get-game-details .btn .btn-info', 'Will ROYALS5 work?')]), !hasData ? (0, _dom.div)('.not-loaded .row', [(0, _dom.h1)('.not-loaded-header', 'IDK, did the Royals score 5 runs or more and win? Click the button!')]) : (0, _dom.div)('.game-details-container .row', [royals5 ? (0, _dom.div)('.status-yes ', [(0, _dom.h1)('.status-yes-header', 'YES!'), (0, _dom.img)('.salvy .img .img-responsive', { src: "http://cdn.fansided.com/wp-content/blogs.dir/220/files/2014/10/alcides-escobar-salvador-perez-mlb-al-wild-card-oakland-athletics-kansas-city-royals1-590x900.jpg" })]) : (0, _dom.div)('.status-no', [(0, _dom.h1)('.status-no-header', 'NO :('), (0, _dom.img)('.salvy-sad .img .img-responsive', { src: "http://www.newsobserver.com/news/nation-world/1tbux4/picture18733713/ALTERNATES/FREE_960/018.JPG" })]), (0, _dom.div)('.game-details', [(0, _dom.h2)('.royals-score', 'Royals: ' + royalsRuns), (0, _dom.h2)('.opponent-score', 'Opponent: ' + opponentRuns), rbiHittersContainer({
+	    return (0, _dom.div)('.container .game-details', [(0, _dom.div)('.game-details-button-container .row', [(0, _dom.button)('.get-game-details .btn .btn-info', 'Refresh')]), !hasData ? (0, _dom.div)('.not-loaded .row', [(0, _dom.h1)('.not-loaded-header', 'Loading...')]) : (0, _dom.div)('.game-details-container .row', [royals5 ? (0, _dom.div)('.status-yes ', [(0, _dom.h1)('.status-yes-header', 'YES!'), (0, _dom.img)('.salvy .img .img-responsive .center-block', { src: "http://cdn.fansided.com/wp-content/blogs.dir/220/files/2014/10/alcides-escobar-salvador-perez-mlb-al-wild-card-oakland-athletics-kansas-city-royals1-590x900.jpg" })]) : (0, _dom.div)('.status-no', [(0, _dom.h1)('.status-no-header', 'NO :('), (0, _dom.img)('.salvy-sad .img .img-responsive .center-block', { src: "http://www.newsobserver.com/news/nation-world/1tbux4/picture18733713/ALTERNATES/FREE_960/018.JPG" })]), (0, _dom.div)('.game-details', [(0, _dom.h2)('.royals-score', 'Royals: ' + royalsRuns), (0, _dom.h2)('.opponent-score', 'Opponent: ' + opponentRuns), rbiHittersContainer({
 	      prop$: _Rx.Observable.of({
 	        team: 'royals',
 	        rbiHitters: rbiHitters.royals
@@ -132,8 +135,8 @@
 	  var prop$ = sources.prop$;
 
 	  var vtree$ = prop$.map(function (props) {
-	    return (0, _dom.div)('.' + props.team + '-rbi-hitters-container .col-md-3', [(0, _dom.h4)('.' + props.team + '-rbi-header .first-letter', props.team + ' RBI Hitters'), (0, _dom.ul)('.rbi-hitters-list', props.rbiHitters.map(function (hitter) {
-	      return (0, _dom.li)('.rbi-hitter', hitter);
+	    return (0, _dom.div)('.' + props.team + '-rbi-hitters-container .col-md-3', [(0, _dom.h4)('.' + props.team + '-rbi-header .first-letter', props.team + ' RBI Hitters'), (0, _dom.ul)('.rbi-hitters-list .list-group', props.rbiHitters.map(function (hitter) {
+	      return (0, _dom.li)('.rbi-hitter .list-group-item', hitter);
 	    }))]);
 	  });
 
@@ -146,7 +149,7 @@
 	  var prop$ = sources.prop$;
 
 	  var vtree$ = prop$.map(function (props) {
-	    return (0, _dom.div)('.' + props.team + '-pitchers-container .col-md-3', [(0, _dom.h4)('.' + props.team + '-pitcher-header .first-letter', props.team + ' Pitcher'), (0, _dom.ul)('.pitcher-list', [(0, _dom.li)('.pitcher', props.pitcher)])]);
+	    return (0, _dom.div)('.' + props.team + '-pitchers-container .col-md-3', [(0, _dom.h4)('.' + props.team + '-pitcher-header .first-letter', props.team + ' Pitcher'), (0, _dom.ul)('.pitcher-list .list-group', [(0, _dom.li)('.pitcher .list-group-item', props.pitcher)])]);
 	  });
 
 	  return {

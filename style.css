@@ -1,6 +1,9 @@
-.col-centered{
-    float: none;
-    margin: 0 auto;
+body {
+  padding-top: 50px;
+}
+.game-details {
+  padding: 40px 15px;
+  text-align: center;
 }
 
 .opponent-score{
